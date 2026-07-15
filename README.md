@@ -1,62 +1,94 @@
-# 🎓 AI Career Selection
+# AI Career Selection
 
-**Students share who they are. The AI tells them where they belong.**
+A local-first decision-support project for matching a student profile to institute programs with transparent, reviewable scoring.
 
-A platform where a student fills in everything about themselves (interests, grades, subjects they love, budget, location, goals), explores every university and institute in one place, and gets an honest, AI-driven recommendation of the best-fit institutes for them — ranked, explained, and personalised.
+The system does **not** decide a student's future and does not treat an LLM as an admissions authority. It produces a ranked shortlist, explains every score component, separates fit from data confidence, and tells the user what must be verified with official institute sources.
 
-> Build order: features are numbered 1..N. Each feature = one focused, shippable change pushed to git. **This is Feature #1: the foundation.**
+## Current status
 
----
+**Feature #2: Explainable Match Engine v1**
 
-## 🌟 What it does (the vision)
+- deterministic profile-to-program ranking
+- hard academic eligibility gate
+- weighted interest, subject, goal, budget, location, and academic components
+- separate confidence score for profile completeness and catalog provenance
+- explicit warnings for missing, stale, or synthetic data
+- stable tie-breaking and bounded input validation
+- protected/sensitive profile attributes are not used for scoring
+- dependency-free Node.js runtime and automated tests
 
-1. **Student Profile** — the student tells the system everything: academic record, favourite subjects, interests, strengths, budget, preferred city/country, career goals.
-2. **Institute Explorer** — browse/search every university and institute, with programs, fees, locations, admission criteria, deadlines.
-3. **AI Match Engine** — the AI reads the student's profile + interests and recommends the institutes that fit best, ranked 1..N, each with a clear "why this is a good fit for you" explanation.
-4. **Guidance** — next steps: what to study, entry requirements, deadlines, and how to prepare.
+## Quick start
 
-## 🧠 Why AI-driven
+Requirements: Node.js 20 or newer.
 
-Most students pick blind — by hearsay or peer pressure. This reads the actual person (interests + ability + constraints) and matches it to real programs, then explains the reasoning so the student learns, not just obeys.
-
----
-
-## 🏗️ Architecture (planned)
-
-```
-ai-career-selection/
-├── apps/
-│   ├── web/          # student-facing app (profile, explorer, recommendations)
-│   └── api/          # backend API
-├── packages/
-│   ├── match-engine/ # AI matching + scoring (profile  ->  ranked institutes)
-│   └── shared/       # shared types/models (Student, Institute, Program, Match)
-├── data/             # seed institute/program data
-└── docs/             # specs per feature
+```bash
+npm ci
+npm test
+npm run demo
+npm run check
 ```
 
-**Stack (proposed, locked in a later feature):**
-- Web: React + TypeScript + Tailwind
-- API: Node + TypeScript (Express/Fastify)
-- DB: Postgres (students, institutes, programs, matches)
-- AI: routed through a self-hosted LLM (Ollama) for profile→fit reasoning, with a deterministic scoring layer underneath so results are explainable and not pure black-box.
+The demo uses only fictional records from `data/sample-institutes.json`.
 
-## 🧩 Core data model (first draft)
+## Public API
 
-- **Student**: interests[], subjects[], grades, budget, location, goals[]
-- **Institute**: name, type, location, ranking, programs[]
-- **Program**: name, field, fees, duration, entryRequirements
-- **Match**: studentId, instituteId, programId, score (0–100), reasons[]
+```js
+import { matchStudent } from './packages/match-engine/index.mjs';
 
-See [`packages/shared/models.ts`](packages/shared/models.ts) for the typed definitions.
+const result = matchStudent(student, institutes, {
+  topK: 5,
+  asOf: '2026-07-15',
+});
+```
 
-## 🗺️ Roadmap (numbered features)
+Each match includes:
 
-- **#1 — Foundation (this commit):** vision, architecture, data model, repo scaffold.
-- **#2 onwards:** to be assigned. Each number = one focused feature, coded and pushed.
+- `fitScore`: weighted program fit from 0 to 100
+- `confidence`: completeness/provenance confidence from 0 to 100
+- `eligible` and `eligibilityStatus`
+- component points and maximum points
+- human-readable reasons
+- missing/stale/synthetic-data warnings
+- source metadata when supplied
 
----
+Programs below a known academic threshold are excluded by default. They can be returned for review with `includeIneligible: true`, but remain clearly marked ineligible.
 
-## 🚦 Status
+## Default scoring weights
 
-Feature #1 ✅ — foundation in place. Waiting for Feature #2.
+| Component | Weight |
+|---|---:|
+| Interests | 30 |
+| Subjects | 20 |
+| Goals | 20 |
+| Budget | 15 |
+| Location | 10 |
+| Academics | 5 |
+
+Weights are configurable, validated, and normalized. The same input and options always produce the same order.
+
+## Data and safety boundary
+
+The committed catalog is synthetic and must never be presented as real admissions data. A production catalog needs official or licensed sources, verification dates, accreditation checks, currency normalization, and a documented update process.
+
+LLMs may later rewrite already-computed reasons into simpler language. They must not change eligibility, component scores, or ranking.
+
+## Repository structure
+
+```text
+packages/shared/models.ts          Shared domain types
+packages/match-engine/             Validated deterministic engine
+packages/match-engine/index.d.ts   TypeScript public declarations
+data/sample-institutes.json        Fictional test/demo catalog
+scripts/match-demo.mjs             Runnable example
+tests/                             Regression suites
+docs/                              Design, references, and audits
+```
+
+## Roadmap
+
+- **#1 Foundation:** vision and initial domain models
+- **#2 Explainable Match Engine v1:** complete
+- Student profile UI/API with consent and minimal-data collection
+- Official-source institute explorer with freshness monitoring
+- Offline evaluation dataset and ranking-quality metrics
+- Optional LLM explanation layer that cannot alter deterministic results
