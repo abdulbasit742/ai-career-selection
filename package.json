@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "node --test",
-    "check": "node --check packages/match-engine/index.mjs && node --check scripts/match-demo.mjs && node --test",
+    "check": "node --check packages/match-engine/index.mjs && node --check packages/match-engine/validation.mjs && node --check packages/match-engine/text.mjs && node --check packages/match-engine/components.mjs && node --check packages/match-engine/scoring.mjs && node --check scripts/match-demo.mjs && node --test",
     "demo": "node scripts/match-demo.mjs"
   }
 }
