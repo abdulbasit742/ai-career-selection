@@ -1,0 +1,96 @@
+[
+  {
+    "id": "demo-tech-university",
+    "name": "Demo Technology University",
+    "type": "university",
+    "location": { "city": "Islamabad", "country": "Pakistan" },
+    "source": {
+      "name": "Synthetic repository fixture",
+      "url": "https://example.invalid/demo-tech-university",
+      "verifiedAt": "2026-07-15",
+      "synthetic": true
+    },
+    "programs": [
+      {
+        "id": "demo-bs-computer-science",
+        "instituteId": "demo-tech-university",
+        "name": "BS Computer Science",
+        "field": "Computer Science",
+        "keywords": ["programming", "algorithms", "software", "artificial intelligence"],
+        "careerOutcomes": ["software developer", "AI engineer", "data engineer"],
+        "feesPerYear": 280000,
+        "currency": "PKR",
+        "durationYears": 4,
+        "minAcademicScore": 70,
+        "entryRequirements": ["Mathematics", "Physics"]
+      },
+      {
+        "id": "demo-bs-data-science",
+        "instituteId": "demo-tech-university",
+        "name": "BS Data Science",
+        "field": "Data Science",
+        "keywords": ["statistics", "machine learning", "programming", "data"],
+        "careerOutcomes": ["data scientist", "machine learning engineer"],
+        "feesPerYear": 310000,
+        "currency": "PKR",
+        "durationYears": 4,
+        "minAcademicScore": 75,
+        "entryRequirements": ["Mathematics", "Statistics"]
+      }
+    ]
+  },
+  {
+    "id": "demo-health-college",
+    "name": "Demo College of Health Sciences",
+    "type": "college",
+    "location": { "city": "Lahore", "country": "Pakistan" },
+    "source": {
+      "name": "Synthetic repository fixture",
+      "url": "https://example.invalid/demo-health-college",
+      "verifiedAt": "2026-07-15",
+      "synthetic": true
+    },
+    "programs": [
+      {
+        "id": "demo-bs-public-health",
+        "instituteId": "demo-health-college",
+        "name": "BS Public Health",
+        "field": "Public Health",
+        "keywords": ["biology", "healthcare", "community", "research"],
+        "careerOutcomes": ["public health analyst", "health program coordinator"],
+        "feesPerYear": 220000,
+        "currency": "PKR",
+        "durationYears": 4,
+        "minAcademicScore": 65,
+        "entryRequirements": ["Biology", "Chemistry"]
+      }
+    ]
+  },
+  {
+    "id": "demo-design-institute",
+    "name": "Demo Institute of Design",
+    "type": "institute",
+    "location": { "city": "Karachi", "country": "Pakistan" },
+    "source": {
+      "name": "Synthetic repository fixture",
+      "url": "https://example.invalid/demo-design-institute",
+      "verifiedAt": "2026-07-15",
+      "synthetic": true
+    },
+    "programs": [
+      {
+        "id": "demo-bs-interaction-design",
+        "instituteId": "demo-design-institute",
+        "name": "BS Interaction Design",
+        "field": "Design",
+        "keywords": ["design", "user experience", "creativity", "technology"],
+        "careerOutcomes": ["UX designer", "product designer"],
+        "feesPerYear": 260000,
+        "currency": "PKR",
+        "durationYears": 4,
+        "minAcademicScore": 60,
+        "entryRequirements": ["Portfolio"]
+      }
+    ]
+  }
+]
