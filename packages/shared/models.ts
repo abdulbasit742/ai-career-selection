@@ -1,44 +1,43 @@
-// packages/shared/models.ts
-// Core domain models for AI Career Selection. These are the single source of truth shared by the
-// API, the match engine, and the web app. Feature #1 defines the shapes; later features fill in
-// behaviour (persistence, matching, UI).
+// Shared domain models for AI Career Selection.
 
-/** A field/discipline, e.g. "Computer Science", "Medicine", "Physics". */
 export type Field = string;
 
-/** What the student tells us about themselves. The richer this is, the better the match. */
 export interface Student {
   id: string;
   name: string;
-  /** Free-text + tags of what they're into, e.g. ["coding", "space", "startups"]. */
   interests: string[];
-  /** Subjects they've studied / enjoy, e.g. ["Physics", "Maths", "Biology"]. */
   subjects: string[];
-  /** Normalised academic score 0..100 (maps from %, GPA, grades — handled later). */
   academicScore?: number;
-  /** Yearly budget the student/family can afford, in PKR (or a currency set later). */
   budget?: number;
-  /** Where they are / want to study. */
   location?: { city?: string; country?: string };
-  /** Preference for studying near home vs anywhere. */
   relocationOk?: boolean;
-  /** Career goals in their own words, e.g. ["become a doctor", "work in AI"]. */
   goals: string[];
   createdAt: string;
   updatedAt: string;
 }
 
+export interface DataSource {
+  name: string;
+  url?: string;
+  verifiedAt?: string;
+  /** True only for fixtures that must never be presented as real admissions data. */
+  synthetic?: boolean;
+}
+
 export interface Program {
   id: string;
   instituteId: string;
-  name: string;            // e.g. "BS Computer Science"
-  field: Field;            // e.g. "Computer Science"
+  name: string;
+  field: Field;
+  keywords?: string[];
+  careerOutcomes?: string[];
   feesPerYear?: number;
+  currency?: string;
   durationYears?: number;
-  /** Minimum normalised academic score 0..100 to be eligible. */
   minAcademicScore?: number;
   entryRequirements?: string[];
   applicationDeadline?: string;
+  source?: DataSource;
 }
 
 export interface Institute {
@@ -46,26 +45,44 @@ export interface Institute {
   name: string;
   type: 'university' | 'college' | 'institute';
   location: { city?: string; country?: string };
-  /** Lower is better (1 = top). Optional; not every institute is ranked. */
   ranking?: number;
   website?: string;
+  source?: DataSource;
   programs: Program[];
 }
 
-/** A single recommendation: one program at one institute, scored and explained. */
+export interface MatchComponent {
+  ratio: number;
+  points: number;
+  maxPoints: number;
+}
+
 export interface Match {
   studentId: string;
   instituteId: string;
+  instituteName: string;
   programId: string;
-  /** 0..100 fit score produced by the match engine. */
-  score: number;
-  /** Human-readable reasons the engine chose this, e.g. "Matches your interest in coding". */
+  programName: string;
+  field: Field;
+  eligible: boolean;
+  eligibilityStatus: 'verified' | 'unknown' | 'below-threshold';
+  fitScore: number;
+  confidence: number;
+  components: Record<string, MatchComponent>;
   reasons: string[];
+  warnings: string[];
+  source: DataSource | null;
 }
 
-/** The ranked result returned to the student. */
 export interface Recommendation {
   student: Pick<Student, 'id' | 'name'>;
-  matches: Match[]; // sorted by score desc
-  generatedAt: string;
+  matches: Match[];
+  excluded: Array<{
+    instituteId: string;
+    programId: string;
+    reason: string;
+    requiredScore?: number;
+  }>;
+  evaluatedPrograms: number;
+  generatedAt: string | null;
 }
