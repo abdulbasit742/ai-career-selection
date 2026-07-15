@@ -1,29 +1,27 @@
 # Feature #1 — Foundation
 
 ## Goal
-Lay the groundwork so every later numbered feature has a clear home: a shared vision, a folder
-structure, and the core domain models the whole system revolves around.
+
+Lay the groundwork so every later numbered feature has a clear home: a shared vision, folder structure, and core domain models.
 
 ## Delivered
-- **Vision + architecture** in the root [README](../README.md).
-- **Domain models** in [`packages/shared/models.ts`](../packages/shared/models.ts): `Student`,
-  `Institute`, `Program`, `Match`, `Recommendation`.
-- **Folder scaffold**: `apps/web`, `apps/api`, `packages/match-engine`, `packages/shared`, `data`,
-  `docs`.
+
+- Vision and architecture in the root [README](../README.md).
+- Domain models in [`packages/shared/models.ts`](../packages/shared/models.ts).
+- Folder scaffold for web, API, match engine, shared models, data, and documentation.
 
 ## How numbered features work
-Each number (1, 2, 3, …) is ONE focused feature. For each:
-1. Build the smallest complete version of that feature.
-2. Commit with `feat(#N): <what>` and push.
-3. Update the README roadmap status.
 
-This keeps the history readable and every step shippable, instead of one giant unreviewable dump.
+Each number is one focused, shippable feature:
 
-## Suggested next features (not started — waiting for the go-ahead number)
-- **#2 Student Profile capture** — form + API to create/update a `Student`.
-- **#3 Institute Explorer** — list/search `Institute`s and their `Program`s from seed data.
-- **#4 Match Engine v1** — deterministic scoring: interests/subjects/budget/location → ranked matches with reasons.
-- **#5 AI reasoning layer** — wrap the scores with LLM-generated "why this fits you" explanations.
+1. Build the smallest complete vertical slice.
+2. Add focused tests and documentation.
+3. Update roadmap status and verification commands.
 
-The student profile is intentionally first after foundation because nothing can be matched until we
-can capture who the student is.
+## Current sequence
+
+- **#1 Foundation:** complete.
+- **#2 Explainable Match Engine v1:** complete. It validates profile/catalog data and produces deterministic rankings with separate fit and confidence scores.
+- **Next:** profile capture UI/API, official-source institute explorer, offline evaluation, then an optional explanation-only LLM layer.
+
+The implementation order changed from the original suggestion because an executable, testable scoring baseline establishes the data contract needed by both profile capture and the institute explorer.
