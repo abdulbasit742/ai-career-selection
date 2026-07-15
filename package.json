@@ -1,0 +1,14 @@
+{
+  "name": "ai-career-selection",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check packages/match-engine/index.mjs && node --check scripts/match-demo.mjs && node --test",
+    "demo": "node scripts/match-demo.mjs"
+  }
+}
